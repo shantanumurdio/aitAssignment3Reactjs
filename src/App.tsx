@@ -1,26 +1,31 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import LoginPage from './Components/Login/LoginPage';
+import Main from './Components/Body/Main';
+import Employ from './Components/Sidebar/Employ/Employ';
+import Company from './Components/Sidebar/Company/Company';
+import CompFrom from "./Components/Sidebar/Company/CompTable/CompForm";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<LoginPage />} />
+          <Route path="/main" element={<Main />} />
+          <Route path="/employ" element={<Employ />} />
+          <Route path="/company" element={<Company />} />
+          {/* Ensure to pass onAdd prop to CompFrom */}
+          <Route path="/compform" element={<CompFrom onAdd={handleAddProject} />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
 export default App;
+
+// Define handleAddProject function here or import it from where it's defined
+function handleAddProject(name: string, project: string, domain: string, backendTech: string) {
+  // Implement logic to add project details
+}
