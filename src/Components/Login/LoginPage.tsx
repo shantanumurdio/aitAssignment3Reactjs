@@ -56,6 +56,8 @@ const LoginPage: React.FC = () => {
 
 const LoginForm: React.FC<{ toggleForm: () => void }> = ({ toggleForm }) => {
   const navigate = useNavigate();
+  const validEmail = 'Shantanumurdio@gmail.com';
+  const validPassword = '123456';
 
   const formik = useFormik({
     initialValues: {
@@ -70,14 +72,13 @@ const LoginForm: React.FC<{ toggleForm: () => void }> = ({ toggleForm }) => {
       password: Yup.string()
         .min(6, 'Password must be at least 6 characters')
         .required('Password is required'),
-      rememberMe: Yup.boolean()
-        .oneOf([true], 'You must accept the Remember me option'),
     }),
     onSubmit: (values) => {
-      // Handle login logic here
-      console.log(values);
-      // Navigate to '/main' after successful login
-      navigate('/main');
+      if (values.email === validEmail && values.password === validPassword) {
+        navigate('/main');
+      } else {
+        alert('Invalid email or password');
+      }
     },
   });
 

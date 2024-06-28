@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -14,29 +14,39 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 import Search from "./Search";
+import { useSelector } from "react-redux";
 
-type RowData = {
+interface ProjectData {
   id: number;
   name: string;
   project: string;
   domain: string;
   backendTech: string;
-};
-
-function createData(id: number, name: string, project: string, domain: string, backendTech: string): RowData {
-  return { id, name, project, domain, backendTech };
 }
 
-const initialRows: RowData[] = [
-  createData(1, "Shantanu", "E-commerce", "FrontEnd", "Node Js"),
-  // Add more data as needed
-];
+interface UserSlice {
+  projectData: ProjectData[];
+}
 
-export default function BasicTable() {
+interface RootState {
+  user: UserSlice;
+}
+
+const createData = (
+  id: number,
+  name: string,
+  project: string,
+  domain: string,
+  backendTech: string
+): ProjectData => {
+  return { id, name, project, domain, backendTech };
+};
+
+const BasicTable: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [rows, setRows] = useState<RowData[]>(initialRows);
+  const [rows, setRows] = useState<ProjectData[]>([]);
   const [editOpen, setEditOpen] = useState<boolean>(false);
-  const [editData, setEditData] = useState<RowData>({
+  const [editData, setEditData] = useState<ProjectData>({
     id: 0,
     name: "",
     project: "",
@@ -44,12 +54,29 @@ export default function BasicTable() {
     backendTech: "",
   });
   const navigate = useNavigate();
+  const projectData = useSelector((state: RootState) => state.user.projectData);
+  
+  // Load from local storage on initial render
+  useEffect(() => {
+    const storedData = localStorage.getItem("projectData");
+    if (storedData) {
+      setRows(JSON.parse(storedData));
+    }
+  }, []);
+
+  // Update local storage whenever projectData changes
+  useEffect(() => {
+    if (projectData && Array.isArray(projectData)) {
+      localStorage.setItem("projectData", JSON.stringify(projectData));
+      setRows(projectData);
+    }
+  }, [projectData]);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query.toLowerCase());
   };
 
-  const handleEditOpen = (row: RowData) => {
+  const handleEditOpen = (row: ProjectData) => {
     setEditData(row);
     setEditOpen(true);
   };
@@ -60,12 +87,24 @@ export default function BasicTable() {
   };
 
   const handleEditSave = () => {
-    setRows(rows.map(row => (row.id === editData.id ? editData : row)));
-    setEditOpen(false);
+    const updatedRows = rows.map((row) =>
+      row.id === editData.id ? { ...editData } : row
+    );
+    setRows(updatedRows);
+    setEditOpen(false); // Close the edit dialog after saving
+
+    // Update projectData in Redux or local state as needed
   };
 
   const handleDelete = (id: number) => {
-    setRows(rows.filter(row => row.id !== id));
+    const updatedRows = rows.filter((row) => row.id !== id);
+    setRows(updatedRows);
+
+    // Update projectData in Redux or local state as needed
+  };
+
+  const handleAddNew = () => {
+    navigate("/compform");
   };
 
   const filteredRows = rows.filter(
@@ -88,6 +127,15 @@ export default function BasicTable() {
         >
           AIT GLOBAL DATA
         </h1>
+        <h1
+          style={{
+            textAlign: "center",
+            borderBottom: "2px solid black",
+            width: "300px",
+          }}
+        >
+          Company DATA
+        </h1>
       </div>
       <div
         style={{
@@ -98,7 +146,11 @@ export default function BasicTable() {
           alignItems: "center",
         }}
       >
-        <Button variant="contained" color="primary" onClick={() => navigate('/compform')}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleAddNew}
+        >
           Add New
         </Button>
         <div
@@ -116,6 +168,7 @@ export default function BasicTable() {
         component={Paper}
         sx={{ width: "100%", marginTop: "10px", border: "1px solid black" }}
       >
+        
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
@@ -189,4 +242,6 @@ export default function BasicTable() {
       </Dialog>
     </div>
   );
-}
+};
+
+export default BasicTable;

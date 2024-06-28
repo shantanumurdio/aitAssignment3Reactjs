@@ -33,6 +33,7 @@ function createData(
 
 const initialRows: RowData[] = [
   createData("Shantanu", "Shantumurdio@gmail.com", "Developer", 1132),
+  createData("Shantanu", "Shantumurdio@gmail.com", "Developer", 1132),
   // Add more data as needed
 ];
 
@@ -99,7 +100,16 @@ export default function BasicTable() {
             width: "300px",
           }}
         >
-          AIT GLOBAL DATA
+          AIT GLOBAL 
+        </h1>
+        <h1
+          style={{
+            textAlign: "center",
+            borderBottom: "2px solid black",
+            width: "300px",
+          }}
+        >
+          Employ's DATA
         </h1>
       </div>
       <div

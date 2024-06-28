@@ -35,11 +35,11 @@ function ResponsiveAppBar() {
     <AppBar position="static" sx={{ height: "100px" }}>
       <Toolbar>
         <Typography variant="h6" sx={{ flexGrow: 1 }}>
-          
+          <h1 style={{ textAlign: "center"}}>Welcome To Dashboard</h1>
         </Typography>
 
-        <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-          <AdbIcon />
+        <IconButton onClick={handleOpenUserMenu} sx={{ p: 0  }}>
+        <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
         </IconButton>
 
         <Menu
